@@ -1,4 +1,4 @@
-## AndoraQuest
+## LeagueUHC
 
 Pour plus de détails, référez-vous au texte de licence disponible [ici](LICENSE).
 
