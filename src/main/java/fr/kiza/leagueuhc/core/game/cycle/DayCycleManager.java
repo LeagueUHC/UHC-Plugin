@@ -148,9 +148,9 @@ public class DayCycleManager {
         playSound(Sound.LEVEL_UP, 1.0f, 1.0f);
 
         Bukkit.broadcastMessage("");
-        Bukkit.broadcastMessage(ChatColor.AQUA + "╔══════════════════╗");
+        Bukkit.broadcastMessage(ChatColor.AQUA + "╔═══════╗");
         Bukkit.broadcastMessage(ChatColor.AQUA + "║" + ChatColor.WHITE + "   ⚔ " + ChatColor.BOLD + "ÉPISODE " + currentEpisode + ChatColor.RESET + ChatColor.WHITE + " ⚔   " + ChatColor.AQUA + "║");
-        Bukkit.broadcastMessage(ChatColor.AQUA + "╚══════════════════╝");
+        Bukkit.broadcastMessage(ChatColor.AQUA + "╚═══════╝");
         Bukkit.broadcastMessage("");
     }
 
