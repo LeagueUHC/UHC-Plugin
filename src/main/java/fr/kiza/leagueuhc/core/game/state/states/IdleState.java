@@ -77,7 +77,5 @@ public class IdleState extends BaseGameState {
         player.getInventory().clear();
 
         player.teleport(new Location(Bukkit.getWorlds().get(0), 0, 100, 0));
-
-        HostManager.giveItem(player);
     }
 }
