@@ -314,7 +314,7 @@ public class PregenManager {
             initiator.sendMessage("§7Bordure : §e" + (currentRadius * 2) + " blocs");
             initiator.sendMessage("§2Dark Forest au centre (700x700)");
             initiator.sendMessage("");
-            initiator.sendMessage("§7Utilisez §e/tppregen §7pour voir le résultat");
+            initiator.sendMessage("§7Utilisez §e/uhc pregen check §7pour voir le résultat");
             initiator.sendMessage("§aVous pouvez maintenant lancer la partie !");
             initiator.sendMessage("§a§l========================================");
             initiator.playSound(initiator.getLocation(), Sound.LEVEL_UP, 1.0f, 2.0f);
