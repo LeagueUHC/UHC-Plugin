@@ -158,7 +158,7 @@ public class PlayingState extends BaseGameState {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                Bukkit.getPluginManager().callEvent(new PlayerFreezeEvent(player, false));
+                                players.forEach(players -> Bukkit.getPluginManager().callEvent(new PlayerFreezeEvent(players, false)));
                             }
                         }.runTaskLater(LeagueUHC.getInstance(), 20L * 2);
 
