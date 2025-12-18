@@ -32,6 +32,8 @@ public class GameEngine extends BukkitRunnable {
         this.lastUpdate = System.currentTimeMillis();
         this.isRunning = false;
 
+        this.instance.getServer().getMessenger().registerOutgoingPluginChannel(this.instance, "BungeeCord");
+
         this.initializeStates();
         this.setupTransitions();
 

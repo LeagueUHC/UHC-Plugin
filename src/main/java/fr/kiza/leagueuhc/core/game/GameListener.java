@@ -1,15 +1,12 @@
 package fr.kiza.leagueuhc.core.game;
 
 import fr.kiza.leagueuhc.LeagueUHC;
-import fr.kiza.leagueuhc.core.game.context.GameContext;
 import fr.kiza.leagueuhc.core.game.event.GameTimerEvent;
 import fr.kiza.leagueuhc.core.game.event.PlayerFreezeEvent;
 import fr.kiza.leagueuhc.core.game.event.PvPEvent;
 import fr.kiza.leagueuhc.core.game.input.GameInput;
 import fr.kiza.leagueuhc.core.game.input.InputType;
 
-import fr.kiza.leagueuhc.core.game.state.GameState;
-import fr.kiza.leagueuhc.core.game.state.StateManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -163,7 +160,7 @@ public class GameListener implements Listener {
                 event.setCancelled(true);
 
                 Player damager = (Player) event.getDamager();
-                damager.sendMessage("§cLe PvP n'est pas encore activé!");
+                damager.sendMessage(ChatColor.RED + "Le PvP n'est pas encore activé!");
             }
         }
     }

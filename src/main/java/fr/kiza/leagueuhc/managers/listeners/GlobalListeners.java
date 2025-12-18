@@ -4,6 +4,7 @@ import fr.kiza.leagueuhc.LeagueUHC;
 
 import fr.kiza.leagueuhc.core.api.gadget.RainbowWalk;
 
+import fr.kiza.leagueuhc.core.database.service.PlayerService;
 import fr.kiza.leagueuhc.core.game.cycle.DayCycleManager;
 import fr.kiza.leagueuhc.core.game.gui.settings.SettingsGUI;
 import fr.kiza.leagueuhc.core.game.host.HostManager;
@@ -32,13 +33,17 @@ public class GlobalListeners implements Listener {
 
     protected final LeagueUHC instance;
 
-    private final World uhcWorld = Bukkit.getWorld("uhc_world");
+    private final PlayerService playerService;
+    private final World uhcWorld ;
 
     public GlobalListeners(LeagueUHC instance) {
         this.instance = instance;
-        this.instance.getServer().getPluginManager().registerEvents(this, instance);
+        this.playerService = instance.getDatabaseManager().getPlayerService();
+        this.uhcWorld = Bukkit.getWorld("uhc_world");
 
         if (uhcWorld != null) DayCycleManager.forceDay(uhcWorld);
+
+        this.instance.getServer().getPluginManager().registerEvents(this, instance);
     }
 
     @EventHandler (priority = EventPriority.MONITOR)
@@ -46,30 +51,17 @@ public class GlobalListeners implements Listener {
         event.setJoinMessage(null);
 
         final Player player = event.getPlayer();
-        final boolean wasPending = HostManager.isPendingHost(player.getName());
 
         HostManager.onPlayerJoin(player);
-
-        if (wasPending) {
-            player.sendMessage(ChatColor.GREEN + "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
-            player.sendMessage(ChatColor.GOLD + "  ⚔ " + ChatColor.BOLD + "HOST DÉSIGNÉ" + ChatColor.GOLD + " ⚔");
-            player.sendMessage("");
-            player.sendMessage(ChatColor.GRAY + "  Vous avez été désigné comme host !");
-            player.sendMessage(ChatColor.GRAY + "  Vous pouvez maintenant gérer la partie.");
-            player.sendMessage(ChatColor.GREEN + "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
-            Bukkit.broadcastMessage(ChatColor.GOLD + "[UHC] " + ChatColor.YELLOW + player.getName() + ChatColor.GOLD + " est maintenant host de la partie !");
-        } else if (HostManager.isHost(player)) {
-            player.sendMessage(ChatColor.GREEN + "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
-            player.sendMessage(ChatColor.GOLD + "  ⚔ " + ChatColor.BOLD + "HOST" + ChatColor.GOLD + " ⚔");
-            player.sendMessage("");
-            player.sendMessage(ChatColor.GRAY + "  Vous êtes host de cette partie !");
-            player.sendMessage(ChatColor.GRAY + "  Utilisez la torche pour ouvrir les settings.");
-            player.sendMessage(ChatColor.GREEN + "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
-        }
+        this.playerService.loadPlayer(player);
     }
 
     @EventHandler (priority = EventPriority.MONITOR)
-    public void onLogout(final PlayerQuitEvent event) { event.setQuitMessage(null); }
+    public void onLogout(final PlayerQuitEvent event) {
+        event.setQuitMessage(null);
+
+        this.playerService.unloadPlayer(event.getPlayer().getUniqueId());
+    }
 
     @EventHandler (priority = EventPriority.MONITOR)
     public void onPlayerInteract(final PlayerInteractEvent event) {

@@ -6,7 +6,7 @@ import org.bukkit.Material;
 
 @ChampionEntry
 public class Mordekaiser extends Champion {
-    protected Mordekaiser() {
+    public Mordekaiser() {
         super(
                 "Mordekaiser",
                 "Revenant de fer",

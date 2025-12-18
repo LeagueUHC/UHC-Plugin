@@ -6,7 +6,6 @@ import fr.kiza.leagueuhc.core.game.host.HostManager;
 import fr.kiza.leagueuhc.core.game.timer.GameTimerManager;
 import fr.mrmicky.fastboard.FastBoard;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
@@ -106,6 +105,18 @@ public class Scoreboard implements Listener {
         lines.add("");
         lines.add(ChatColor.WHITE + "  Host: " + ChatColor.RED + HostManager.getFirstHostName());
         lines.add(ChatColor.WHITE + "  Joueurs: " + ChatColor.YELLOW + this.instance.getGameEngine().getContext().getPlayers().size() + ChatColor.WHITE + "/" + ChatColor.YELLOW + GameContext.PLAYER_MAX);
+        lines.add("");
+
+        this.instance.getDatabaseManager().getPlayerService()
+                .get(board.getPlayer().getUniqueId())
+                .ifPresent(data -> {
+                    int totalGames = data.getTotalGames();
+                    int totalWins = data.getTotalWins();
+
+                    lines.add(ChatColor.WHITE + "  Partie" + (totalGames == 0 ? "" : "s") + " jouée" + (totalGames == 0 ? "" : "s") + ": " + ChatColor.YELLOW + totalGames);
+                    lines.add(ChatColor.WHITE + "  Partie" + (totalWins == 0 ? "" : "s") + " gagnée" + (totalWins == 0 ? "" : "s") + ": " + ChatColor.YELLOW + totalWins);
+                });
+
         lines.add("");
         lines.add(getAnimatedIP());
 

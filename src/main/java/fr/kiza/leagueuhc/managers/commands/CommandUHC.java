@@ -42,16 +42,17 @@ public class CommandUHC implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length >= 1 && args[0].equalsIgnoreCase("host")) {
+            if (sender instanceof Player && args.length >= 2 && args[1].equalsIgnoreCase("claim")) {
+                this.handleClaimHost((Player) sender);
+                return true;
+            }
             this.handleHost(sender, args);
             return true;
         }
 
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "Cette commande est réservée aux joueurs !");
-            return true;
-        }
+        if (!(sender instanceof Player)) { return true; }
 
-        Player player = (Player) sender;
+        final Player player = (Player) sender;
 
         if (args.length < 1) {
             this.sendHelpMessage(player);
@@ -370,6 +371,30 @@ public class CommandUHC implements CommandExecutor, TabCompleter {
         Bukkit.broadcastMessage(ChatColor.RED + "" + ChatColor.BOLD + "⚠ La partie a été arrêtée par un administrateur.");
     }
 
+    private void handleClaimHost(Player player) {
+        if (HostManager.hostClaimed) {
+            player.sendMessage(ChatColor.RED + "✘ Un joueur a déjà claim le rôle de host !");
+            return;
+        }
+
+        if (HostManager.isHost(player)) {
+            player.sendMessage(ChatColor.RED + "✘ Tu es déjà host !");
+            return;
+        }
+
+        HostManager.hostClaimed = true;
+        HostManager.addHost(player);
+
+        player.sendMessage("");
+        player.sendMessage(ChatColor.GREEN + "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
+        player.sendMessage(ChatColor.GOLD + "  ⚔ " + ChatColor.BOLD + "HOST CLAIM" + ChatColor.GOLD + " ⚔");
+        player.sendMessage("");
+        player.sendMessage(ChatColor.GRAY + "  Tu es maintenant host de la partie !");
+        player.sendMessage(ChatColor.GREEN + "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
+
+        Bukkit.broadcastMessage(ChatColor.GOLD + "[UHC] " + ChatColor.YELLOW + player.getName() + ChatColor.GOLD + " a claim le rôle de host !");
+    }
+
     private void handleHost(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             sender.sendMessage(ChatColor.RED + "[UHC] Seule la console peut gérer les hosts.");
@@ -637,6 +662,12 @@ public class CommandUHC implements CommandExecutor, TabCompleter {
             if (args[0].equalsIgnoreCase("inv") || args[0].equalsIgnoreCase("inventory")) {
                 if ("check".startsWith(input)) {
                     completions.add("check");
+                }
+            }
+
+            if (args[0].equalsIgnoreCase("host") && isPlayer && !HostManager.hostClaimed) {
+                if ("claim".startsWith(input)) {
+                    completions.add("claim");
                 }
             }
 

@@ -11,6 +11,8 @@ import java.util.*;
 
 public final class HostManager {
 
+    public static boolean hostClaimed = false;
+
     private static final Set<UUID> hosts = new HashSet<>();
     private static final Set<String> pendingHosts = new HashSet<>();
 
@@ -20,6 +22,8 @@ public final class HostManager {
         hosts.add(player.getUniqueId());
         pendingHosts.remove(player.getName().toLowerCase());
         player.setWhitelisted(true);
+
+        giveItem(player);
     }
 
     public static void addHost(UUID uuid) {
@@ -78,6 +82,7 @@ public final class HostManager {
         if (pendingHosts.remove(player.getName().toLowerCase())) {
             hosts.add(player.getUniqueId());
             player.setWhitelisted(true);
+            giveItem(player);
         }
     }
 
@@ -150,6 +155,8 @@ public final class HostManager {
     }
 
     public static void giveItem(Player player) {
+        player.getInventory().clear();
+
         if (isHost(player)) {
             player.getInventory().setItem(4,
                     new ItemBuilder(Material.REDSTONE_TORCH_ON)
