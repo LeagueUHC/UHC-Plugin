@@ -6,7 +6,7 @@ import org.bukkit.Material;
 
 @ChampionEntry
 public class Kayn extends Champion {
-    protected Kayn() {
+    public Kayn() {
         super(
                 "Kayn",
                 "Faucheur de l'ombre",
