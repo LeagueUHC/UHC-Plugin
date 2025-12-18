@@ -13,7 +13,7 @@ public enum ScenarioType {
     BOOST_CAVE("boostcave", "BoostCave", "Augmente le nombre de caves", true),
     OUTIL("outil", "Outil", "Les outils craftés ont Efficacité 3 et Solidité 3"),
     ARBRE("arbre", "Arbre", "Casser une bûche détruit tout l'arbre (jusqu'à 10min)"),
-    FINAL_HEALTH("finalhealth", "FinalHealth", "Health tous les joueurs à 10min et 19min");
+    FINAL_HEALTH("finalhealth", "FinalHealth", "Health tous les joueurs à 10min et 20min");
 
     private final String id;
     private final String displayName;
