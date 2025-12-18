@@ -53,7 +53,6 @@ public class GlobalListeners implements Listener {
         final Player player = event.getPlayer();
 
         HostManager.onPlayerJoin(player);
-
         this.playerService.loadPlayer(player);
     }
 
