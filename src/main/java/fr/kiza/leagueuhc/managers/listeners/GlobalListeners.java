@@ -1,23 +1,21 @@
 package fr.kiza.leagueuhc.managers.listeners;
 
 import fr.kiza.leagueuhc.LeagueUHC;
-
 import fr.kiza.leagueuhc.core.api.gadget.RainbowWalk;
-
 import fr.kiza.leagueuhc.core.database.service.PlayerService;
 import fr.kiza.leagueuhc.core.game.cycle.DayCycleManager;
 import fr.kiza.leagueuhc.core.game.gui.settings.SettingsGUI;
 import fr.kiza.leagueuhc.core.game.host.HostManager;
 import fr.kiza.leagueuhc.core.game.state.GameState;
-
-import org.bukkit.*;
-import org.bukkit.entity.EntityType;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -26,8 +24,6 @@ import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.*;
 
 public class GlobalListeners implements Listener {
 
@@ -171,32 +167,32 @@ public class GlobalListeners implements Listener {
         event.setCancelled(true);
     }
 
-    @EventHandler (priority = EventPriority.MONITOR)
-    public void onCreatureSpawn(CreatureSpawnEvent event) {
-        EntityType type = event.getEntityType();
-
-        switch (type) {
-            case ZOMBIE:
-            case SKELETON:
-            case SPIDER:
-            case CAVE_SPIDER:
-            case CREEPER:
-            case ENDERMAN:
-            case WITCH:
-            case SLIME:
-            case SILVERFISH:
-            case ENDERMITE:
-            case GUARDIAN:
-            case BLAZE:
-            case GHAST:
-            case MAGMA_CUBE:
-            case PIG_ZOMBIE:
-                event.setCancelled(true);
-                break;
-            default:
-                break;
-        }
-    }
+//    @EventHandler (priority = EventPriority.MONITOR)
+//    public void onCreatureSpawn(CreatureSpawnEvent event) {
+//        EntityType type = event.getEntityType();
+//
+//        switch (type) {
+//            case ZOMBIE:
+//            case SKELETON:
+//            case SPIDER:
+//            case CAVE_SPIDER:
+//            case CREEPER:
+//            case ENDERMAN:
+//            case WITCH:
+//            case SLIME:
+//            case SILVERFISH:
+//            case ENDERMITE:
+//            case GUARDIAN:
+//            case BLAZE:
+//            case GHAST:
+//            case MAGMA_CUBE:
+//            case PIG_ZOMBIE:
+//                event.setCancelled(true);
+//                break;
+//            default:
+//                break;
+//        }
+//    }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAsyncChat(final AsyncPlayerChatEvent event) {
