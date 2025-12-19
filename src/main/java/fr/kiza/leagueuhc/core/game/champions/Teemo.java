@@ -4,7 +4,7 @@ import fr.kiza.leagueuhc.core.api.champion.Champion;
 import fr.kiza.leagueuhc.core.api.champion.ability.Ability;
 import fr.kiza.leagueuhc.core.api.champion.ability.AbilityContext;
 import fr.kiza.leagueuhc.core.api.champion.ability.StatefulAbility;
-import fr.kiza.leagueuhc.core.api.champion.annotations.ChampionEntry;
+import fr.kiza.leagueuhc.core.api.champion.annotation.ChampionEntry;
 import fr.kiza.leagueuhc.core.api.packets.builder.ParticleBuilder;
 import fr.kiza.leagueuhc.core.game.GamePlayer;
 import fr.kiza.leagueuhc.utils.ItemBuilder;
