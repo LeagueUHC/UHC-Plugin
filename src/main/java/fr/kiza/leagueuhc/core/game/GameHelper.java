@@ -3,6 +3,7 @@ package fr.kiza.leagueuhc.core.game;
 import fr.kiza.leagueuhc.LeagueUHC;
 import fr.kiza.leagueuhc.core.api.champion.ChampionManager;
 import fr.kiza.leagueuhc.core.api.champion.ChampionRegistry;
+import fr.kiza.leagueuhc.core.api.drake.DrakeRegistry;
 import fr.kiza.leagueuhc.core.api.gui.manager.GuiManager;
 import fr.kiza.leagueuhc.core.api.scenario.ScenarioLoader;
 import fr.kiza.leagueuhc.managers.Manager;
@@ -22,6 +23,7 @@ public class GameHelper {
         GuiManager.initialize("fr.kiza.leagueuhc.core.game.gui");
         ChampionRegistry.initialize("fr.kiza.leagueuhc.core.game.champions");
         ScenarioLoader.initialize("fr.kiza.leagueuhc.core.game.scenarios", this.manager.getScenarioManager());
+        DrakeRegistry.initialize("fr.kiza.leagueuhc.core.game.drakes");
 
         new ChampionManager(instance);
 	}

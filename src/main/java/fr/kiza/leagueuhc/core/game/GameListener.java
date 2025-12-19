@@ -175,6 +175,10 @@ public class GameListener implements Listener {
             Bukkit.getPluginManager().callEvent(new PvPEvent(true));
         }
 
+        if (seconds == 0) {
+            this.instance.getGameEngine().getGameHelper().getManager().getDrakeManager().startSpawnTask();
+        }
+
         if (!this.firstHealDone && minutes >= 10) {
             this.firstHealDone = true;
             Bukkit.getOnlinePlayers().forEach(players -> {
