@@ -1,4 +1,4 @@
-package fr.kiza.leagueuhc.core.api.champion.annotations;
+package fr.kiza.leagueuhc.core.api.champion.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
