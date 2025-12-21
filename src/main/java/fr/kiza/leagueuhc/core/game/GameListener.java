@@ -6,7 +6,6 @@ import fr.kiza.leagueuhc.core.game.event.PlayerFreezeEvent;
 import fr.kiza.leagueuhc.core.game.event.PvPEvent;
 import fr.kiza.leagueuhc.core.game.input.GameInput;
 import fr.kiza.leagueuhc.core.game.input.InputType;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -21,7 +20,10 @@ import org.bukkit.event.player.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class GameListener implements Listener {
 
@@ -173,10 +175,6 @@ public class GameListener implements Listener {
         if (!this.pvpEnabled && seconds >= 20) {
             this.pvpEnabled = true;
             Bukkit.getPluginManager().callEvent(new PvPEvent(true));
-        }
-
-        if (seconds == 0) {
-            this.instance.getGameEngine().getGameHelper().getManager().getDrakeManager().startSpawnTask();
         }
 
         if (!this.firstHealDone && minutes >= 10) {

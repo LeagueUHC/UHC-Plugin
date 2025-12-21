@@ -17,6 +17,7 @@ import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -106,9 +107,7 @@ public class AncestralCraftListener implements Listener {
 
         CraftingInventory craftInv = (CraftingInventory) event.getInventory();
         ItemStack[] matrix = craftInv.getMatrix();
-        for (int i = 0; i < matrix.length; i++) {
-            matrix[i] = null;
-        }
+        Arrays.fill(matrix, null);
         craftInv.setMatrix(matrix);
     }
 }

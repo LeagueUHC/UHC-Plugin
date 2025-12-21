@@ -39,16 +39,34 @@ public class ChemtechDrake extends Drake {
     }
 
     @Override
-    public void applyPassive(Player player) {
+    public boolean applyPassive(Player player) {
         ItemStack chestplate = player.getInventory().getChestplate();
-        
-        if (chestplate == null || chestplate.getType() == Material.AIR) {
-            chestplate = new ItemStack(Material.DIAMOND_CHESTPLATE);
+
+        if (chestplate == null || chestplate.getType() != Material.DIAMOND_CHESTPLATE) {
+            player.sendMessage(ChatColor.RED + "✖ Tu dois porter un plastron en diamant !");
+            return false;
         }
-        
-        chestplate.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3);
-        player.getInventory().setChestplate(chestplate);
-        
+
+        int currentLevel = chestplate.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
+        chestplate.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, currentLevel + 3);
+
         player.sendMessage(getColor() + "» " + ChatColor.GREEN + "Protection III activée sur votre plastron !");
+        return true;
+    }
+
+    @Override
+    public void removePassive(Player player) {
+        ItemStack chestplate = player.getInventory().getChestplate();
+
+        if (chestplate != null && chestplate.containsEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL)) {
+            int level = chestplate.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
+            if (level <= 3) {
+                chestplate.removeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL);
+            } else {
+                chestplate.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, level - 3);
+            }
+        }
+
+        player.sendMessage(getColor() + "» " + ChatColor.RED + "Protection III retirée");
     }
 }

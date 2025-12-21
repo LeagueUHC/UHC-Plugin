@@ -44,9 +44,7 @@ public class DrakeActivateListener implements Listener {
 
         PlayerDrakeData data = PlayerDrakeData.get(player);
 
-        // Si le joueur a déjà ce drake
         if (data.hasDrake(drake)) {
-            // Si c'est un pouvoir actif, l'utiliser
             if (drake.hasActivePower()) {
                 drake.usePower(player);
             } else {
@@ -57,14 +55,12 @@ public class DrakeActivateListener implements Listener {
 
         // Activer le passif
         data.addDrake(drake);
-        player.setItemInHand(null);
 
         player.sendMessage("");
         player.sendMessage(ChatColor.GREEN + "✓ Passif du " + drake.getDisplayName() + ChatColor.GREEN + " activé !");
 
         // Garder l'item si c'est un pouvoir actif
         if (drake.hasActivePower()) {
-            player.getInventory().addItem(drake.createItem());
             player.sendMessage(ChatColor.GRAY + "Tu peux réutiliser l'item pour activer le pouvoir.");
         }
 
@@ -76,4 +72,7 @@ public class DrakeActivateListener implements Listener {
             player.sendMessage(ChatColor.GRAY + "Tu peux maintenant craft le Drake Ancestral !");
         }
     }
+
+    @EventHandler
+    public void on
 }

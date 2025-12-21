@@ -42,8 +42,14 @@ public class HextechDrake extends Drake {
     }
 
     @Override
-    public void applyPassive(Player player) {
+    public boolean applyPassive(Player player) {
         player.sendMessage(getColor() + "» " + ChatColor.GREEN + "10% de chance d'infliger un éclair !");
+        return true;
+    }
+
+    @Override
+    public void removePassive(Player player) {
+        player.sendMessage(getColor() + "» " + ChatColor.RED + "Passif d'éclair retiré");
     }
 
     @Override

@@ -36,10 +36,19 @@ public class MountainDrake extends Drake {
     }
 
     @Override
-    public void applyPassive(Player player) {
-        double currentMax = player.getMaxHealth();
-        player.setMaxHealth(currentMax + 4);
-        
+    public boolean applyPassive(Player player) {
+        player.setMaxHealth(player.getMaxHealth() + 4);
         player.sendMessage(getColor() + "» " + ChatColor.GREEN + "+2 cœurs permanents !");
+        return true;
+    }
+
+    @Override
+    public void removePassive(Player player) {
+        double newMax = Math.max(2.0, player.getMaxHealth() - 4);
+        player.setMaxHealth(newMax);
+        if (player.getHealth() > newMax) {
+            player.setHealth(newMax);
+        }
+        player.sendMessage(getColor() + "» " + ChatColor.RED + "-2 cœurs (passif retiré)");
     }
 }

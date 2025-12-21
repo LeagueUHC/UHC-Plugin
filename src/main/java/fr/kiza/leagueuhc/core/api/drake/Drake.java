@@ -17,7 +17,7 @@ import java.util.Arrays;
  */
 public abstract class Drake {
 
-    private static final String DRAKE_NBT_KEY = "§k§r§drake";
+    private static final String DRAKE_NBT_KEY = "§k§r§ddrake";
 
     // ==================== MÉTHODES ABSTRAITES ====================
 
@@ -51,8 +51,17 @@ public abstract class Drake {
      * Appelé quand le joueur active l'item drake.
      *
      * @param player Le joueur qui reçoit le passif
+     * @return
      */
-    public abstract void applyPassive(Player player);
+    public abstract boolean applyPassive(Player player);
+
+    /**
+     * Retire le passif du joueur.
+     * Appelé quand le joueur drop l'item drake.
+     *
+     * @param player Le joueur qui perd le passif
+     */
+    public abstract void removePassive(Player player);
 
     // ==================== MÉTHODES OPTIONNELLES À OVERRIDE ====================
 

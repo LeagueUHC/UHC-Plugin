@@ -38,16 +38,34 @@ public class OceanDrake extends Drake {
     }
 
     @Override
-    public void applyPassive(Player player) {
+    public boolean applyPassive(Player player) {
         ItemStack boots = player.getInventory().getBoots();
-        
-        if (boots == null || boots.getType() == Material.AIR) {
-            boots = new ItemStack(Material.DIAMOND_BOOTS);
+
+        if (boots == null || boots.getType() != Material.DIAMOND_BOOTS) {
+            player.sendMessage(ChatColor.RED + "✖ Tu dois porter des bottes en diamant !");
+            return false;
         }
-        
-        boots.addUnsafeEnchantment(Enchantment.DEPTH_STRIDER, 1);
-        player.getInventory().setBoots(boots);
-        
-        player.sendMessage(getColor() + "» " + ChatColor.GREEN + "Depth Strider I activé sur vos bottes !");
+
+        int currentLevel = boots.getEnchantmentLevel(Enchantment.DEPTH_STRIDER);
+        boots.addUnsafeEnchantment(Enchantment.DEPTH_STRIDER, currentLevel + 1);
+
+        player.sendMessage(getColor() + "» " + ChatColor.GREEN + "Depth Strider activé sur vos bottes !");
+        return true;
+    }
+
+    @Override
+    public void removePassive(Player player) {
+        ItemStack boots = player.getInventory().getBoots();
+
+        if (boots != null && boots.containsEnchantment(Enchantment.DEPTH_STRIDER)) {
+            int level = boots.getEnchantmentLevel(Enchantment.DEPTH_STRIDER);
+            if (level <= 1) {
+                boots.removeEnchantment(Enchantment.DEPTH_STRIDER);
+            } else {
+                boots.addUnsafeEnchantment(Enchantment.DEPTH_STRIDER, level - 1);
+            }
+        }
+
+        player.sendMessage(getColor() + "» " + ChatColor.RED + "Depth Strider retiré");
     }
 }

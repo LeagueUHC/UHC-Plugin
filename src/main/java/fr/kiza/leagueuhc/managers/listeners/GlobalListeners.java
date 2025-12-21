@@ -42,7 +42,7 @@ public class GlobalListeners implements Listener {
         this.instance.getServer().getPluginManager().registerEvents(this, instance);
     }
 
-    @EventHandler (priority = EventPriority.MONITOR)
+    @EventHandler (priority = EventPriority.LOWEST)
     public void onLogin(final PlayerJoinEvent event) {
         event.setJoinMessage(null);
 

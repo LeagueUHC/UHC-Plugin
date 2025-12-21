@@ -1,10 +1,11 @@
 package fr.kiza.leagueuhc.core.game.context;
 
+import fr.kiza.leagueuhc.LeagueUHC;
 import fr.kiza.leagueuhc.core.api.champion.Champion;
 import fr.kiza.leagueuhc.core.api.champion.ChampionRegistry;
-import fr.kiza.leagueuhc.core.api.scenario.Scenario;
+import fr.kiza.leagueuhc.core.api.drake.DrakeManager;
+import fr.kiza.leagueuhc.core.api.drake.PlayerDrakeData;
 import fr.kiza.leagueuhc.core.api.scenario.ScenarioType;
-import fr.kiza.leagueuhc.core.game.timer.GameTimerManager;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
@@ -241,5 +242,13 @@ public class GameContext {
         this.clearScenarios();
         this.resetEffects();
         this.disableAllChampions();
+
+        final DrakeManager drake = LeagueUHC.getInstance().getGameEngine().getGameHelper().getManager().getDrakeManager();
+
+        if (drake == null) return;
+
+        drake.cleanup();
+        drake.resetSpawnQueue();
+        PlayerDrakeData.clear();
     }
 }

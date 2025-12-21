@@ -1,5 +1,6 @@
 package fr.kiza.leagueuhc.core.api.drake;
 
+import fr.kiza.leagueuhc.config.GameConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -117,7 +118,7 @@ public class DrakeManager {
         if (spawnQueue.isEmpty()) return;
 
         Drake drake = spawnQueue.remove(0);
-        World world = Bukkit.getWorlds().get(0);
+        World world = Bukkit.getWorld(GameConfig.GAME_WORLD);
         Location loc = getRandomSpawnLocation(world);
 
         spawnDrake(drake, loc);
@@ -153,11 +154,12 @@ public class DrakeManager {
         activeDrakes.put(entity.getUniqueId(), drake);
         spawnedDrakeIds.add(drake.getId());
 
-        Bukkit.broadcastMessage("");
-        Bukkit.broadcastMessage(ChatColor.GOLD + "⚔ " + drake.getDisplayName() + ChatColor.GOLD + " vient d'apparaître !");
-        Bukkit.broadcastMessage(ChatColor.GRAY + "Position : " + ChatColor.WHITE + 
-                (int) spawnLoc.getX() + ", " + (int) spawnLoc.getZ());
-        Bukkit.broadcastMessage("");
+        Bukkit.getOnlinePlayers().forEach(players -> {
+            players.sendMessage("");
+            players.sendMessage(ChatColor.GOLD + "⚔ " + drake.getDisplayName() + ChatColor.GOLD + " vient d'apparaître !");
+            players.sendMessage(ChatColor.GRAY + "Position : " + ChatColor.WHITE + (int) spawnLoc.getX() + ", " + (int) spawnLoc.getZ());
+            players.sendMessage("");
+        });
 
         return entity;
     }

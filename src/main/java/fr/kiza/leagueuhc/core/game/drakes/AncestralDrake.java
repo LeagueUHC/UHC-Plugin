@@ -94,56 +94,88 @@ public class AncestralDrake extends Drake {
     }
 
     @Override
-    public void applyPassive(Player player) {
+    public boolean applyPassive(Player player) {
         PlayerDrakeData data = PlayerDrakeData.get(player);
-        
+
         if (data.hasAncestral()) {
             player.sendMessage(ChatColor.RED + "Tu as déjà activé le Drake Ancestral !");
-            return;
+            return false;
+        }
+
+        ItemStack chestplate = player.getInventory().getChestplate();
+        ItemStack boots = player.getInventory().getBoots();
+
+        if (chestplate == null || chestplate.getType() != Material.DIAMOND_CHESTPLATE) {
+            player.sendMessage(ChatColor.RED + "✖ Tu dois porter un plastron en diamant !");
+            return false;
+        }
+
+        if (boots == null || boots.getType() != Material.DIAMOND_BOOTS) {
+            player.sendMessage(ChatColor.RED + "✖ Tu dois porter des bottes en diamant !");
+            return false;
         }
 
         data.setAncestral(true);
 
-        // +4 cœurs permanents
+        // +4 cœurs
         player.setMaxHealth(player.getMaxHealth() + 8);
 
         // Depth Strider III
-        ItemStack boots = player.getInventory().getBoots();
-        if (boots == null || boots.getType() == Material.AIR) {
-            boots = new ItemStack(Material.DIAMOND_BOOTS);
-        }
-        boots.addUnsafeEnchantment(Enchantment.DEPTH_STRIDER, 3);
-        player.getInventory().setBoots(boots);
+        int depthLevel = boots.getEnchantmentLevel(Enchantment.DEPTH_STRIDER);
+        boots.addUnsafeEnchantment(Enchantment.DEPTH_STRIDER, depthLevel + 3);
 
         // Protection III
-        ItemStack chestplate = player.getInventory().getChestplate();
-        if (chestplate == null || chestplate.getType() == Material.AIR) {
-            chestplate = new ItemStack(Material.DIAMOND_CHESTPLATE);
-        }
-        chestplate.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3);
-        player.getInventory().setChestplate(chestplate);
+        int protLevel = chestplate.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
+        chestplate.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, protLevel + 3);
 
         // Speed III permanent
-        player.addPotionEffect(new PotionEffect(
-                PotionEffectType.SPEED,
-                Integer.MAX_VALUE,
-                2,
-                false,
-                false
-        ));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2, false, false));
 
         player.sendMessage("");
         player.sendMessage(ChatColor.GOLD + "★★★ Drake Ancestral activé ! ★★★");
         player.sendMessage("");
-        player.sendMessage(ChatColor.GREEN + "» " + ChatColor.WHITE + "+4 cœurs permanents");
-        player.sendMessage(ChatColor.GREEN + "» " + ChatColor.WHITE + "Depth Strider III");
-        player.sendMessage(ChatColor.GREEN + "» " + ChatColor.WHITE + "50% chance de feu");
-        player.sendMessage(ChatColor.GREEN + "» " + ChatColor.WHITE + "40% chance d'éclair");
-        player.sendMessage(ChatColor.GREEN + "» " + ChatColor.WHITE + "Speed III permanent");
-        player.sendMessage(ChatColor.GREEN + "» " + ChatColor.WHITE + "Protection III");
-        player.sendMessage(ChatColor.GREEN + "» " + ChatColor.WHITE + "Vision de la vie");
-        player.sendMessage(ChatColor.GREEN + "» " + ChatColor.WHITE + "Exécution sous 2 cœurs");
-        player.sendMessage("");
+
+        return true;
+    }
+
+    @Override
+    public void removePassive(Player player) {
+        PlayerDrakeData data = PlayerDrakeData.get(player);
+        data.setAncestral(false);
+
+        // -4 cœurs
+        double newMax = Math.max(2.0, player.getMaxHealth() - 8);
+        player.setMaxHealth(newMax);
+        if (player.getHealth() > newMax) {
+            player.setHealth(newMax);
+        }
+
+        // Retirer Speed
+        player.removePotionEffect(PotionEffectType.SPEED);
+
+        // Retirer Depth Strider III
+        ItemStack boots = player.getInventory().getBoots();
+        if (boots != null && boots.containsEnchantment(Enchantment.DEPTH_STRIDER)) {
+            int level = boots.getEnchantmentLevel(Enchantment.DEPTH_STRIDER);
+            if (level <= 3) {
+                boots.removeEnchantment(Enchantment.DEPTH_STRIDER);
+            } else {
+                boots.addUnsafeEnchantment(Enchantment.DEPTH_STRIDER, level - 3);
+            }
+        }
+
+        // Retirer Protection III
+        ItemStack chestplate = player.getInventory().getChestplate();
+        if (chestplate != null && chestplate.containsEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL)) {
+            int level = chestplate.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
+            if (level <= 3) {
+                chestplate.removeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL);
+            } else {
+                chestplate.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, level - 3);
+            }
+        }
+
+        player.sendMessage(ChatColor.GOLD + "★ Drake Ancestral retiré !");
     }
 
     @Override

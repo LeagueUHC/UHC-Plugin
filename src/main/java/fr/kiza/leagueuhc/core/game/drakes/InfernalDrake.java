@@ -42,8 +42,14 @@ public class InfernalDrake extends Drake {
     }
 
     @Override
-    public void applyPassive(Player player) {
+    public boolean applyPassive(Player player) {
         player.sendMessage(getColor() + "» " + ChatColor.GREEN + "20% de chance d'enflammer vos cibles !");
+        return true;
+    }
+
+    @Override
+    public void removePassive(Player player) {
+        player.sendMessage(getColor() + "» " + ChatColor.RED + "Passif de feu retiré");
     }
 
     @Override

@@ -54,11 +54,19 @@ public class WindDrake extends Drake {
     }
 
     @Override
-    public void applyPassive(Player player) {
+    public boolean applyPassive(Player player) {
         player.sendMessage(getColor() + "» " + ChatColor.GREEN + "Pouvoir des vents débloqué !");
         player.sendMessage(ChatColor.GRAY + "   Utilise l'item pour activer Speed III pendant 15 secondes.");
+        return true;
     }
 
+    @Override
+    public void removePassive(Player player) {
+        player.removePotionEffect(PotionEffectType.SPEED);
+        PlayerDrakeData.get(player).resetCooldown(getId());
+
+        player.sendMessage(getColor() + "» " + ChatColor.RED + "Pouvoir des vents retiré");
+    }
     @Override
     public void usePower(Player player) {
         PlayerDrakeData data = PlayerDrakeData.get(player);

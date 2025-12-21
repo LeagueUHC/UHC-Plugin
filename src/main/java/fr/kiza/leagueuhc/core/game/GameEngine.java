@@ -2,10 +2,7 @@ package fr.kiza.leagueuhc.core.game;
 
 import fr.kiza.leagueuhc.LeagueUHC;
 import fr.kiza.leagueuhc.core.game.context.GameContext;
-import fr.kiza.leagueuhc.core.game.drakes.listeners.AncestralCraftListener;
-import fr.kiza.leagueuhc.core.game.drakes.listeners.DrakeActivateListener;
-import fr.kiza.leagueuhc.core.game.drakes.listeners.DrakeDeathListener;
-import fr.kiza.leagueuhc.core.game.drakes.listeners.DrakePassiveListener;
+import fr.kiza.leagueuhc.core.game.drakes.listeners.*;
 import fr.kiza.leagueuhc.core.game.input.GameInput;
 import fr.kiza.leagueuhc.core.game.state.GameState;
 import fr.kiza.leagueuhc.core.game.state.StateManager;
@@ -53,7 +50,8 @@ public class GameEngine extends BukkitRunnable {
                 new AncestralCraftListener(this.instance),
                 new DrakeActivateListener(),
                 new DrakeDeathListener(this.gameHelper.getManager().getDrakeManager()),
-                new DrakePassiveListener()
+                new DrakePassiveListener(),
+                new DrakeDropListener()
         ).forEach(listeners -> Bukkit.getPluginManager().registerEvents(listeners, this.instance));
     }
 

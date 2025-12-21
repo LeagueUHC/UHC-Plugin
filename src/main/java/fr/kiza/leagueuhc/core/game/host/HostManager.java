@@ -79,10 +79,11 @@ public final class HostManager {
     }
 
     public static void onPlayerJoin(Player player) {
+        giveItem(player);
+
         if (pendingHosts.remove(player.getName().toLowerCase())) {
             hosts.add(player.getUniqueId());
             player.setWhitelisted(true);
-            giveItem(player);
         }
     }
 

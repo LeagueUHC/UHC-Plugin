@@ -55,13 +55,38 @@ public class PlayerDrakeData {
 
     /**
      * Ajoute un drake au joueur et applique son passif.
+     * @return true si le passif a été appliqué
      */
-    public void addDrake(Drake drake) {
-        if (ownedDrakes.add(drake.getId())) {
+    public boolean addDrake(Drake drake) {
+        Player player = getPlayer();
+        if (player == null) return false;
+
+        if (drake.applyPassive(player)) {
+            ownedDrakes.add(drake.getId());
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Retire un drake du joueur et enlève son passif.
+     */
+    public void removeDrake(Drake drake) {
+        if (ownedDrakes.remove(drake.getId())) {
             Player player = getPlayer();
             if (player != null) {
-                drake.applyPassive(player);
+                drake.removePassive(player);
             }
+        }
+    }
+
+    /**
+     * Retire un drake par son ID.
+     */
+    public void removeDrake(String drakeId) {
+        Drake drake = DrakeRegistry.getDrake(drakeId);
+        if (drake != null) {
+            removeDrake(drake);
         }
     }
 
