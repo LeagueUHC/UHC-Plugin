@@ -72,7 +72,4 @@ public class DrakeActivateListener implements Listener {
             player.sendMessage(ChatColor.GRAY + "Tu peux maintenant craft le Drake Ancestral !");
         }
     }
-
-    @EventHandler
-    public void on
 }
