@@ -1,6 +1,9 @@
 package fr.kiza.leagueuhc.managers;
 
 import fr.kiza.leagueuhc.LeagueUHC;
+import fr.kiza.leagueuhc.core.api.drake.DrakeManager;
+import fr.kiza.leagueuhc.core.api.drake.DrakeRegistry;
+import fr.kiza.leagueuhc.core.api.drake.PlayerDrakeData;
 import fr.kiza.leagueuhc.core.api.gadget.GadgetManager;
 import fr.kiza.leagueuhc.core.api.gadget.RainbowWalk;
 import fr.kiza.leagueuhc.core.api.scenario.ScenarioManager;
@@ -17,6 +20,8 @@ public class Manager {
     protected ScenarioManager scenarioManager;
     protected DayCycleManager dayCycleManager;
 
+    protected DrakeManager drakeManager;
+
     public void onEnable(LeagueUHC inst) {
         instance = inst;
 
@@ -28,10 +33,17 @@ public class Manager {
         this.gadgetManager = new GadgetManager();
         this.scenarioManager = new ScenarioManager(instance);
         this.dayCycleManager = new DayCycleManager(instance);
+
+        this.drakeManager = new DrakeManager(instance);
     }
 
     public void onDisable() {
         if (this.gadgetManager != null) this.gadgetManager.onDisable();
+
+        if (this.drakeManager != null) this.drakeManager.cleanup();
+        PlayerDrakeData.clear();
+        DrakeRegistry.clear();
+
         RainbowWalk.onDisable();
     }
 
@@ -45,5 +57,9 @@ public class Manager {
 
     public DayCycleManager getDayCycleManager() {
         return dayCycleManager;
+    }
+
+    public DrakeManager getDrakeManager() {
+        return drakeManager;
     }
 }

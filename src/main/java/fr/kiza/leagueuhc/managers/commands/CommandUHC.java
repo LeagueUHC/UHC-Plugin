@@ -1,7 +1,10 @@
 package fr.kiza.leagueuhc.managers.commands;
 
 import fr.kiza.leagueuhc.LeagueUHC;
-import fr.kiza.leagueuhc.core.api.champion.ChampionRegistry;
+import fr.kiza.leagueuhc.core.api.drake.Drake;
+import fr.kiza.leagueuhc.core.api.drake.DrakeManager;
+import fr.kiza.leagueuhc.core.api.drake.DrakeRegistry;
+import fr.kiza.leagueuhc.core.api.drake.PlayerDrakeData;
 import fr.kiza.leagueuhc.core.api.gui.core.ButtonAction;
 import fr.kiza.leagueuhc.core.api.gui.helper.GuiBuilder;
 import fr.kiza.leagueuhc.core.api.scenario.Scenario;
@@ -18,7 +21,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -78,6 +80,9 @@ public class CommandUHC implements CommandExecutor, TabCompleter {
             case "stop":
                 this.handleStopCommand(player);
                 return true;
+            case "drake":
+                this.handleDrakeCommand(player, args);
+                return true;
             case "scenarios":
                 this.handleScenariosCommand(player);
                 return true;
@@ -109,6 +114,15 @@ public class CommandUHC implements CommandExecutor, TabCompleter {
         player.sendMessage("");
         player.sendMessage(ChatColor.GOLD + "┣ " + ChatColor.WHITE + "/uhc start" + ChatColor.GRAY + " - Lancer la partie");
         player.sendMessage(ChatColor.GOLD + "┣ " + ChatColor.WHITE + "/uhc stop" + ChatColor.GRAY + " - Arrêter la partie");
+        player.sendMessage("");
+        player.sendMessage(ChatColor.GOLD + "┣ " + ChatColor.WHITE + "/uhc drake spawn <id|all|next>" + ChatColor.GRAY + " - Spawn un drake");
+        player.sendMessage(ChatColor.GOLD + "┣ " + ChatColor.WHITE + "/uhc drake give <joueur> <id|all>" + ChatColor.GRAY + " - Donner un drake");
+        player.sendMessage(ChatColor.GOLD + "┣ " + ChatColor.WHITE + "/uhc drake info <id>" + ChatColor.GRAY + " - Infos sur un drake");
+        player.sendMessage(ChatColor.GOLD + "┣ " + ChatColor.WHITE + "/uhc drake start" + ChatColor.GRAY + " - Démarrer le spawn auto");
+        player.sendMessage(ChatColor.GOLD + "┣ " + ChatColor.WHITE + "/uhc drake stop" + ChatColor.GRAY + " - Arrêter le spawn auto");
+        player.sendMessage(ChatColor.GOLD + "┣ " + ChatColor.WHITE + "/uhc drake reset" + ChatColor.GRAY + " - Réinitialiser");
+        player.sendMessage(ChatColor.GOLD + "┣ " + ChatColor.WHITE + "/uhc drake list" + ChatColor.GRAY + " - Lister les drakes");
+        player.sendMessage(ChatColor.GOLD + "┣ " + ChatColor.WHITE + "/uhc drake settime <start|interval> <min>" + ChatColor.GRAY + " - Config timing");
         player.sendMessage("");
         player.sendMessage(ChatColor.GOLD + "┣ " + ChatColor.WHITE + "/uhc host <add|remove|list|clear> [pseudo]" + ChatColor.GRAY + " - Gérer les hosts " + ChatColor.RED + "(console)");
         player.sendMessage("");
@@ -369,6 +383,199 @@ public class CommandUHC implements CommandExecutor, TabCompleter {
 
         player.sendMessage(ChatColor.GREEN + "✔ Vous avez forcé l'arrêt de la partie !");
         Bukkit.broadcastMessage(ChatColor.RED + "" + ChatColor.BOLD + "⚠ La partie a été arrêtée par un administrateur.");
+    }
+
+    private void handleDrakeCommand(final Player player, final String[] args) {
+        if(!this.hasPermission(player)){
+            player.sendMessage(ChatColor.RED + "✘ Vous n'avez pas la permission !");
+            return;
+        }
+
+        // /uhc drake
+        if(args.length < 2){
+            player.sendMessage(ChatColor.GOLD + "=== Commandes Drake ===");
+            player.sendMessage(ChatColor.YELLOW + "/uhc drake spawn <id|all|next>" + ChatColor.GRAY + " - Spawn un drake");
+            player.sendMessage(ChatColor.YELLOW + "/uhc drake give <joueur> <id|all>" + ChatColor.GRAY + " - Donner un drake");
+            player.sendMessage(ChatColor.YELLOW + "/uhc drake info <id>" + ChatColor.GRAY + " - Infos sur un drake");
+            player.sendMessage(ChatColor.YELLOW + "/uhc drake start" + ChatColor.GRAY + " - Démarrer le spawn auto");
+            player.sendMessage(ChatColor.YELLOW + "/uhc drake stop" + ChatColor.GRAY + " - Arrêter le spawn auto");
+            player.sendMessage(ChatColor.YELLOW + "/uhc drake reset" + ChatColor.GRAY + " - Réinitialiser");
+            player.sendMessage(ChatColor.YELLOW + "/uhc drake list" + ChatColor.GRAY + " - Lister les drakes");
+            player.sendMessage(ChatColor.YELLOW + "/uhc drake settime <start|interval> <min>" + ChatColor.GRAY + " - Config timing");
+            return;
+        }
+
+        DrakeManager drakeManager = this.instance.getGameEngine().getGameHelper().getManager().getDrakeManager();
+        String sub = args[1].toLowerCase();
+
+        switch(sub){
+            case "spawn": {
+                if(args.length < 3){
+                    player.sendMessage(ChatColor.RED + "Usage: /uhc drake spawn <id|all|next>");
+                    player.sendMessage(ChatColor.GRAY + "IDs: " + String.join(", ", DrakeRegistry.getRegisteredIds()));
+                    return;
+                }
+
+                String arg = args[2].toLowerCase();
+
+                if(arg.equals("all")){
+                    for(Drake drake : DrakeRegistry.getSpawnableDrakes()){
+                        drakeManager.forceSpawnDrake(drake);
+                    }
+                    player.sendMessage(ChatColor.GREEN + "✔ Tous les drakes ont été spawn !");
+                    return;
+                }
+
+                if(arg.equals("next")){
+                    if(drakeManager.getSpawnQueue().isEmpty()){
+                        player.sendMessage(ChatColor.RED + "✘ Plus de drakes dans la queue !");
+                        return;
+                    }
+                    drakeManager.spawnNextDrake();
+                    player.sendMessage(ChatColor.GREEN + "✔ Prochain drake spawné !");
+                    return;
+                }
+
+                Drake drake = DrakeRegistry.getDrake(arg);
+                if(drake == null){
+                    player.sendMessage(ChatColor.RED + "✘ Drake non trouvé: " + arg);
+                    return;
+                }
+
+                drakeManager.forceSpawnDrake(drake);
+                player.sendMessage(ChatColor.GREEN + "✔ " + drake.getDisplayName() + " spawné !");
+                break;
+            }
+
+            case "give": {
+                if(args.length < 4){
+                    player.sendMessage(ChatColor.RED + "Usage: /uhc drake give <joueur> <id|all>");
+                    return;
+                }
+
+                Player target = Bukkit.getPlayer(args[2]);
+                if(target == null){
+                    player.sendMessage(ChatColor.RED + "✘ Joueur non trouvé: " + args[2]);
+                    return;
+                }
+
+                String arg = args[3].toLowerCase();
+
+                if(arg.equals("all")){
+                    for(Drake drake : DrakeRegistry.getDrakes()){
+                        target.getInventory().addItem(drake.createItem());
+                    }
+                    player.sendMessage(ChatColor.GREEN + "✔ Tous les drakes donnés à " + target.getName());
+                    return;
+                }
+
+                Drake drake = DrakeRegistry.getDrake(arg);
+                if(drake == null){
+                    player.sendMessage(ChatColor.RED + "✘ Drake non trouvé: " + arg);
+                    return;
+                }
+
+                target.getInventory().addItem(drake.createItem());
+                player.sendMessage(ChatColor.GREEN + "✔ " + drake.getDisplayName() + " donné à " + target.getName());
+                break;
+            }
+
+            case "start":
+                drakeManager.startSpawnTask();
+                player.sendMessage(ChatColor.GREEN + "✔ Spawn automatique démarré !");
+                player.sendMessage(ChatColor.GRAY + "Premier spawn dans " + drakeManager.getSpawnStartMinutes() + " minutes.");
+                break;
+
+            case "stop":
+                drakeManager.stopSpawnTask();
+                player.sendMessage(ChatColor.RED + "✔ Spawn automatique arrêté !");
+                break;
+
+            case "reset":
+                drakeManager.resetSpawnQueue();
+                PlayerDrakeData.clear();
+                player.sendMessage(ChatColor.YELLOW + "✔ Système de drakes réinitialisé !");
+                break;
+
+            case "list":
+                player.sendMessage(ChatColor.GOLD + "=== Système de Drakes ===");
+                player.sendMessage("");
+
+                player.sendMessage(ChatColor.YELLOW + "Drakes enregistrés (" + DrakeRegistry.getCount() + "):");
+                for(Drake drake : DrakeRegistry.getDrakes()){
+                    player.sendMessage(ChatColor.GRAY + "  - " + drake.getDisplayName() +
+                            ChatColor.DARK_GRAY + " [" + drake.getId() + "] " +
+                            ChatColor.RED + drake.getHearts() + "❤");
+                }
+
+                player.sendMessage("");
+                player.sendMessage(ChatColor.YELLOW + "Queue de spawn (" + drakeManager.getSpawnQueue().size() + "):");
+                for(Drake drake : drakeManager.getSpawnQueue()){
+                    player.sendMessage(ChatColor.GRAY + "  - " + drake.getDisplayName());
+                }
+
+                player.sendMessage("");
+                player.sendMessage(ChatColor.YELLOW + "Status: " +
+                        (drakeManager.isStarted() ? ChatColor.GREEN + "Actif" : ChatColor.RED + "Inactif"));
+                break;
+
+            case "info": {
+                if(args.length < 3){
+                    player.sendMessage(ChatColor.RED + "Usage: /uhc drake info <id>");
+                    return;
+                }
+
+                Drake drake = DrakeRegistry.getDrake(args[2]);
+                if(drake == null){
+                    player.sendMessage(ChatColor.RED + "✘ Drake non trouvé: " + args[2]);
+                    return;
+                }
+
+                player.sendMessage(ChatColor.GOLD + "=== " + drake.getDisplayName() + " ===");
+                player.sendMessage(ChatColor.YELLOW + "ID: " + ChatColor.WHITE + drake.getId());
+                player.sendMessage(ChatColor.YELLOW + "Entité: " + ChatColor.WHITE + drake.getEntityType());
+                player.sendMessage(ChatColor.YELLOW + "Cœurs: " + ChatColor.WHITE + drake.getHearts());
+                player.sendMessage(ChatColor.YELLOW + "Passif: " + ChatColor.WHITE + drake.getPassiveDescription());
+                player.sendMessage(ChatColor.YELLOW + "Pouvoir actif: " + ChatColor.WHITE +
+                        (drake.hasActivePower() ? "Oui" : "Non"));
+
+                if(drake.hasActivePower()){
+                    player.sendMessage(ChatColor.YELLOW + "Cooldown: " + ChatColor.WHITE +
+                            drake.getPowerCooldown() + "s");
+                }
+                break;
+            }
+
+            case "settime": {
+                if(args.length < 4){
+                    player.sendMessage(ChatColor.RED + "Usage: /uhc drake settime <start|interval> <minutes>");
+                    return;
+                }
+
+                int minutes;
+                try{
+                    minutes = Integer.parseInt(args[3]);
+                }catch(NumberFormatException e){
+                    player.sendMessage(ChatColor.RED + "✘ Nombre invalide: " + args[3]);
+                    return;
+                }
+
+                if(args[2].equalsIgnoreCase("start")){
+                    drakeManager.setSpawnStartMinutes(minutes);
+                    player.sendMessage(ChatColor.GREEN + "✔ Temps de départ: " + minutes + " minutes");
+                }else if(args[2].equalsIgnoreCase("interval")){
+                    drakeManager.setSpawnIntervalMinutes(minutes);
+                    player.sendMessage(ChatColor.GREEN + "✔ Intervalle: " + minutes + " minutes");
+                }else{
+                    player.sendMessage(ChatColor.RED + "✘ Option invalide (start | interval)");
+                }
+                break;
+            }
+
+            default:
+                player.sendMessage(ChatColor.RED + "✘ Sous-commande inconnue.");
+                break;
+        }
     }
 
     private void handleClaimHost(Player player) {

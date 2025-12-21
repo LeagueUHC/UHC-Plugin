@@ -1,6 +1,6 @@
 package fr.kiza.leagueuhc.core.api.champion;
 
-import fr.kiza.leagueuhc.core.api.champion.annotations.ChampionEntry;
+import fr.kiza.leagueuhc.core.api.champion.annotation.ChampionEntry;
 import fr.kiza.leagueuhc.utils.ClassScanner;
 
 import org.bukkit.Bukkit;

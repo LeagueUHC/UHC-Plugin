@@ -2,12 +2,16 @@ package fr.kiza.leagueuhc.core.game;
 
 import fr.kiza.leagueuhc.LeagueUHC;
 import fr.kiza.leagueuhc.core.game.context.GameContext;
+import fr.kiza.leagueuhc.core.game.drakes.listeners.*;
 import fr.kiza.leagueuhc.core.game.input.GameInput;
 import fr.kiza.leagueuhc.core.game.state.GameState;
 import fr.kiza.leagueuhc.core.game.state.StateManager;
 import fr.kiza.leagueuhc.core.game.state.states.*;
 import fr.kiza.leagueuhc.core.game.state.transition.StateTransition;
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.Arrays;
 
 public class GameEngine extends BukkitRunnable {
 
@@ -37,7 +41,18 @@ public class GameEngine extends BukkitRunnable {
         this.initializeStates();
         this.setupTransitions();
 
-        instance.getServer().getPluginManager().registerEvents(new GameListener(LeagueUHC.getInstance()), instance);
+        this.registerListeners();
+    }
+
+    private void registerListeners() {
+        Arrays.asList(
+                new GameListener(this.instance),
+                new AncestralCraftListener(this.instance),
+                new DrakeActivateListener(),
+                new DrakeDeathListener(this.gameHelper.getManager().getDrakeManager()),
+                new DrakePassiveListener(),
+                new DrakeDropListener()
+        ).forEach(listeners -> Bukkit.getPluginManager().registerEvents(listeners, this.instance));
     }
 
     @Override

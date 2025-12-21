@@ -2,6 +2,7 @@ package fr.kiza.leagueuhc.core.game.state.states;
 
 import fr.kiza.leagueuhc.LeagueUHC;
 import fr.kiza.leagueuhc.core.api.champion.ChampionAssignment;
+import fr.kiza.leagueuhc.core.api.drake.DrakeManager;
 import fr.kiza.leagueuhc.core.api.packets.builder.ActionBarBuilder;
 import fr.kiza.leagueuhc.core.api.packets.builder.TitleBuilder;
 import fr.kiza.leagueuhc.core.game.context.GameContext;
@@ -180,6 +181,14 @@ public class PlayingState extends BaseGameState {
                 index[0]++;
             }
         }.runTaskTimer(LeagueUHC.getInstance(), 0L, 20L);
+
+        final DrakeManager drake = this.instance.getGameEngine().getGameHelper().getManager().getDrakeManager();
+
+        if (drake == null) return;
+
+        drake.setSpawnStartMinutes(0);
+        drake.resetSpawnQueue();
+        drake.startSpawnTask();
     }
 
     @Override
