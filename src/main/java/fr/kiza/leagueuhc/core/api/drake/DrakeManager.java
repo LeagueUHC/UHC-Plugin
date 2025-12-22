@@ -25,7 +25,6 @@ public class DrakeManager {
     private boolean started = false;
     private int spawnTaskId = -1;
 
-    // Configuration
     private int spawnStartMinutes = 1;
     private int spawnIntervalMinutes = 1;
     private int minDistance = 175;
@@ -34,8 +33,6 @@ public class DrakeManager {
     public DrakeManager(JavaPlugin plugin) {
         this.plugin = plugin;
     }
-
-    // ==================== CONFIGURATION ====================
 
     public void setSpawnStartMinutes(int minutes) {
         this.spawnStartMinutes = minutes;
@@ -57,8 +54,6 @@ public class DrakeManager {
     public int getSpawnIntervalMinutes() {
         return spawnIntervalMinutes;
     }
-
-    // ==================== SPAWN QUEUE ====================
 
     /**
      * Réinitialise la queue de spawn avec tous les drakes spawnables.
@@ -123,8 +118,6 @@ public class DrakeManager {
 
         spawnDrake(drake, loc);
     }
-
-    // ==================== SPAWN ====================
 
     /**
      * Spawn un drake à une location donnée.

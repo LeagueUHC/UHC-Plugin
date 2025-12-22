@@ -24,7 +24,7 @@ public final class QueryExecutor {
     private QueryExecutor() { }
 
     public static CompletableFuture<Void> updateAsync(final String sql, final StatementConsumer consumer) {
-        return CompletableFuture.runAsync(() -> updateAsync(sql, consumer), EXECUTOR);
+        return CompletableFuture.runAsync(() -> updateSync(sql, consumer), EXECUTOR);
     }
 
     public static <T> CompletableFuture<T> queryAsync(final String sql, final StatementConsumer consumer, final ResultSetMapper<T> mapper) {

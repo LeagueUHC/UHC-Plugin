@@ -3,6 +3,7 @@ package fr.kiza.leagueuhc.core.game;
 import fr.kiza.leagueuhc.LeagueUHC;
 import fr.kiza.leagueuhc.core.game.context.GameContext;
 import fr.kiza.leagueuhc.core.game.drakes.listeners.*;
+import fr.kiza.leagueuhc.core.game.gold.GoldManager;
 import fr.kiza.leagueuhc.core.game.input.GameInput;
 import fr.kiza.leagueuhc.core.game.state.GameState;
 import fr.kiza.leagueuhc.core.game.state.StateManager;

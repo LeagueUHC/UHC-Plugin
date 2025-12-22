@@ -8,6 +8,7 @@ import fr.kiza.leagueuhc.core.api.gadget.GadgetManager;
 import fr.kiza.leagueuhc.core.api.gadget.RainbowWalk;
 import fr.kiza.leagueuhc.core.api.scenario.ScenarioManager;
 import fr.kiza.leagueuhc.core.game.cycle.DayCycleManager;
+import fr.kiza.leagueuhc.core.game.gold.GoldManager;
 import fr.kiza.leagueuhc.managers.listeners.GlobalListeners;
 import fr.kiza.leagueuhc.ui.scoreboard.Scoreboard;
 import fr.kiza.leagueuhc.ui.tablist.Tablist;
@@ -21,6 +22,7 @@ public class Manager {
     protected DayCycleManager dayCycleManager;
 
     protected DrakeManager drakeManager;
+    protected GoldManager goldManager;
 
     public void onEnable(LeagueUHC inst) {
         instance = inst;
@@ -35,6 +37,7 @@ public class Manager {
         this.dayCycleManager = new DayCycleManager(instance);
 
         this.drakeManager = new DrakeManager(instance);
+        this.goldManager = new GoldManager(instance);
     }
 
     public void onDisable() {
@@ -61,5 +64,9 @@ public class Manager {
 
     public DrakeManager getDrakeManager() {
         return drakeManager;
+    }
+
+    public GoldManager getGoldManager() {
+        return goldManager;
     }
 }

@@ -11,7 +11,7 @@ import java.util.Map;
 public class GameInput {
 
     private final InputType type;
-    private final Player player;
+    private final Player player, killer;
     private final Event event;
     private final long timestamp;
 
@@ -22,6 +22,16 @@ public class GameInput {
     public GameInput(InputType type, Player player, Event event) {
         this.type = type;
         this.player = player;
+        this.killer = null;
+        this.event = event;
+        this.timestamp = System.currentTimeMillis();
+        this.data = new HashMap<>();
+    }
+
+    public GameInput(InputType type, Player victim, Player killer, Event event) {
+        this.type = type;
+        this.player = victim;
+        this.killer = killer;
         this.event = event;
         this.timestamp = System.currentTimeMillis();
         this.data = new HashMap<>();
@@ -33,6 +43,10 @@ public class GameInput {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public Player getKiller() {
+        return killer;
     }
 
     public Event getEvent() {
