@@ -41,8 +41,17 @@ public class PlayerRepository {
                     rs.getInt("total_wins"),
                     rs.getInt("total_kills"),
                     rs.getInt("total_deaths"),
+                    rs.getInt("total_assists"),
                     rs.getDouble("win_rate"),
                     rs.getDouble("kd_ratio"),
+                    rs.getDouble("kda_ratio"),
+                    rs.getInt("best_kill_streak"),
+                    rs.getLong("total_playtime"),
+                    rs.getInt("total_damage_dealt"),
+                    rs.getInt("total_damage_taken"),
+                    rs.getInt("total_drakes_killed"),
+                    rs.getInt("total_drake_buffs_obtained"),
+                    rs.getString("favorite_champion"),
                     rs.getTimestamp("first_join"),
                     rs.getTimestamp("last_played")
             );
@@ -55,9 +64,18 @@ public class PlayerRepository {
             ps.setInt(2, data.getTotalWins());
             ps.setInt(3, data.getTotalKills());
             ps.setInt(4, data.getTotalDeaths());
-            ps.setDouble(5, data.getWinRate());
-            ps.setDouble(6, data.getKdRatio());
-            ps.setString(7, data.getUuid().toString());
+            ps.setInt(5, data.getTotalAssists());
+            ps.setDouble(6, data.getWinRate());
+            ps.setDouble(7, data.getKdRatio());
+            ps.setDouble(8, data.getKdaRatio());
+            ps.setInt(9, data.getBestKillStreak());
+            ps.setLong(10, data.getTotalPlaytime());
+            ps.setInt(11, data.getTotalDamageDealt());
+            ps.setInt(12, data.getTotalDamageTaken());
+            ps.setInt(13, data.getTotalDrakesKilled());
+            ps.setInt(14, data.getTotalDrakeBuffsObtained());
+            ps.setString(15, data.getFavoriteChampion());
+            ps.setString(16, data.getUuid().toString());
         });
     }
 
@@ -73,9 +91,18 @@ public class PlayerRepository {
             ps.setInt(2, data.getTotalWins());
             ps.setInt(3, data.getTotalKills());
             ps.setInt(4, data.getTotalDeaths());
-            ps.setDouble(5, data.getWinRate());
-            ps.setDouble(6, data.getKdRatio());
-            ps.setString(7, data.getUuid().toString());
+            ps.setInt(5, data.getTotalAssists());
+            ps.setDouble(6, data.getWinRate());
+            ps.setDouble(7, data.getKdRatio());
+            ps.setDouble(8, data.getKdaRatio());
+            ps.setInt(9, data.getBestKillStreak());
+            ps.setLong(10, data.getTotalPlaytime());
+            ps.setInt(11, data.getTotalDamageDealt());
+            ps.setInt(12, data.getTotalDamageTaken());
+            ps.setInt(13, data.getTotalDrakesKilled());
+            ps.setInt(14, data.getTotalDrakeBuffsObtained());
+            ps.setString(15, data.getFavoriteChampion());
+            ps.setString(16, data.getUuid().toString());
         });
     }
 }

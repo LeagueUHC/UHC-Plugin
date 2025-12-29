@@ -1,6 +1,7 @@
 package fr.kiza.leagueuhc.core.database.service;
 
 import fr.kiza.leagueuhc.LeagueUHC;
+import fr.kiza.leagueuhc.core.database.data.GameHistoryData;
 import fr.kiza.leagueuhc.core.database.data.PlayerData;
 import fr.kiza.leagueuhc.core.database.repository.PlayerRepository;
 import org.bukkit.entity.Player;
@@ -72,9 +73,9 @@ public class PlayerService {
         this.instance.getLogger().info("All players saved.");
     }
 
-    public void recordGame(final UUID uuid, final boolean won, final int kills, final int deaths) {
+    public void recordGame(final UUID uuid, final GameHistoryData gameHistoryData) {
         this.get(uuid).ifPresent(data -> {
-            data.addGame(won, kills, deaths);
+            data.addGame(gameHistoryData);
             this.repository.save(data);
         });
     }

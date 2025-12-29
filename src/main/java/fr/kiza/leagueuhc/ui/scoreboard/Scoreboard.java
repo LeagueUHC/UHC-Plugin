@@ -1,11 +1,12 @@
 package fr.kiza.leagueuhc.ui.scoreboard;
 
 import fr.kiza.leagueuhc.LeagueUHC;
-import fr.kiza.leagueuhc.core.game.context.GameContext;
+import fr.kiza.leagueuhc.config.GameConfig;
+import fr.kiza.leagueuhc.core.game.GamePlayer;
+import fr.kiza.leagueuhc.core.game.gold.GoldManager;
 import fr.kiza.leagueuhc.core.game.host.HostManager;
 import fr.kiza.leagueuhc.core.game.timer.GameTimerManager;
 import fr.mrmicky.fastboard.FastBoard;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
@@ -72,11 +73,22 @@ public class Scoreboard implements Listener {
     }
 
     private void updatePlayingBoard(final FastBoard board) {
-        List<String> lines = new ArrayList<>();
+        final List<String> lines = new ArrayList<>();
+
+        final GamePlayer gamePlayer = GamePlayer.get(board.getPlayer());
+
+        if (gamePlayer == null) {
+            this.updateDefaultBoard(board);
+            return;
+        }
+
         lines.add(this.getCurrentDate() + ChatColor.DARK_GRAY + " lol-uhc");
         lines.add("");
         lines.add(ChatColor.WHITE + "  Durée: " + ChatColor.YELLOW + GameTimerManager.getInstance().getFormattedTime());
-        lines.add(ChatColor.WHITE + "  Joueurs: " + ChatColor.YELLOW + this.instance.getGameEngine().getContext().getPlayers().size() + ChatColor.WHITE + "/" + ChatColor.YELLOW + GameContext.PLAYER_MAX);
+        lines.add(ChatColor.WHITE + "  Joueurs: " + ChatColor.YELLOW + this.instance.getGameEngine().getContext().getPlayers().size() + ChatColor.WHITE + "/" + ChatColor.YELLOW + GameConfig.MAX_PLAYERS);
+        lines.add("");
+        lines.add(ChatColor.WHITE + "  Kill" + (gamePlayer.getKills() <= 1 ? "" : "s") + ": " + ChatColor.YELLOW + gamePlayer.getKills());
+        lines.add(ChatColor.WHITE + "  Gold" + (gamePlayer.getGold() <= 1 ? "" : "s") + ": " + ChatColor.YELLOW + GoldManager.formatGold(gamePlayer.getGold()));
         lines.add("");
         lines.add(ChatColor.WHITE + "  Episode: " + ChatColor.YELLOW + this.instance.getGameEngine().getGameHelper().getManager().getDayCycleManager().getCurrentEpisode());
         lines.add(ChatColor.WHITE + "  Bordure: " + ChatColor.YELLOW + "1000" + ChatColor.WHITE + "x" + ChatColor.YELLOW + "1000");
@@ -104,7 +116,7 @@ public class Scoreboard implements Listener {
         lines.add(this.getCurrentDate() + ChatColor.DARK_GRAY + " lol-uhc");
         lines.add("");
         lines.add(ChatColor.WHITE + "  Host: " + ChatColor.RED + HostManager.getFirstHostName());
-        lines.add(ChatColor.WHITE + "  Joueurs: " + ChatColor.YELLOW + this.instance.getGameEngine().getContext().getPlayers().size() + ChatColor.WHITE + "/" + ChatColor.YELLOW + GameContext.PLAYER_MAX);
+        lines.add(ChatColor.WHITE + "  Joueurs: " + ChatColor.YELLOW + this.instance.getGameEngine().getContext().getPlayers().size() + ChatColor.WHITE + "/" + ChatColor.YELLOW + GameConfig.MAX_PLAYERS);
         lines.add("");
 
         this.instance.getDatabaseManager().getPlayerService()

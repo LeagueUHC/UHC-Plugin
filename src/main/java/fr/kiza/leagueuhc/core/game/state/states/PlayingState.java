@@ -1,10 +1,12 @@
 package fr.kiza.leagueuhc.core.game.state.states;
 
 import fr.kiza.leagueuhc.LeagueUHC;
+import fr.kiza.leagueuhc.config.GameConfig;
 import fr.kiza.leagueuhc.core.api.champion.ChampionAssignment;
 import fr.kiza.leagueuhc.core.api.drake.DrakeManager;
 import fr.kiza.leagueuhc.core.api.packets.builder.ActionBarBuilder;
 import fr.kiza.leagueuhc.core.api.packets.builder.TitleBuilder;
+import fr.kiza.leagueuhc.core.game.GamePlayer;
 import fr.kiza.leagueuhc.core.game.context.GameContext;
 import fr.kiza.leagueuhc.core.game.event.PlayerFreezeEvent;
 import fr.kiza.leagueuhc.core.game.helper.InventoryHelper;
@@ -33,7 +35,6 @@ public class PlayingState extends BaseGameState {
     private final Map<UUID, DisconnectedPlayerData> disconnectedPlayers = new HashMap<>();
     private final Map<UUID, BukkitTask> reconnectTasks = new HashMap<>();
 
-    private static final int RECONNECT_TIMEOUT = 60 * 5; //5 minutes
     private static final int MAP_RADIUS = 500;
 
     public PlayingState() {
@@ -56,7 +57,7 @@ public class PlayingState extends BaseGameState {
         this.broadcast(ChatColor.GOLD + "" + ChatColor.BOLD + "=============================");
         this.broadcast("");
 
-        final World uhcWorld = Bukkit.getWorld("uhc_world");
+        final World uhcWorld = Bukkit.getWorld(GameConfig.GAME_WORLD);
 
         if (uhcWorld == null) {
             Bukkit.getLogger().severe("[LeagueUHC] Le monde uhc_world n'existe pas !");
@@ -81,8 +82,8 @@ public class PlayingState extends BaseGameState {
         final int totalPlayers = players.size();
         final int[] index = {0};
         final List<Location> usedLocations = new ArrayList<>();
-        final double minDistance = 10.0;
-        final double safeRadius = MAP_RADIUS - 20;
+        final double minDistance = GameConfig.MIN_SPAWN_DISTANCE;
+        final double safeRadius = GameConfig.SPAWN_SAFE_RADIUS;
 
         players.forEach(player -> player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * (totalPlayers + 2), 1, false, false)));
 
@@ -155,20 +156,6 @@ public class PlayingState extends BaseGameState {
                         broadcast(ChatColor.LIGHT_PURPLE + "Vous aurez votre champion dans 10 secondes !");
                         broadcast(ChatColor.GREEN + "Le PvP sera activé dans 20 secondes !");
                         broadcast("");
-
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                players.forEach(players -> Bukkit.getPluginManager().callEvent(new PlayerFreezeEvent(players, false)));
-                            }
-                        }.runTaskLater(LeagueUHC.getInstance(), 20L * 2);
-
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                ChampionAssignment.assignFromRegistry(players);
-                            }
-                        }.runTaskLater(LeagueUHC.getInstance(), 20L * 10);
                     }
 
                     TitleBuilder.create()
@@ -333,7 +320,7 @@ public class PlayingState extends BaseGameState {
                     disconnectedPlayers.put(leavingUUID, playerData);
 
                     BukkitTask timeoutTask = new BukkitRunnable() {
-                        int timeLeft = RECONNECT_TIMEOUT;
+                        int timeLeft = GameConfig.RECONNECT_TIMEOUT_SECONDS;
 
                         @Override
                         public void run() {
