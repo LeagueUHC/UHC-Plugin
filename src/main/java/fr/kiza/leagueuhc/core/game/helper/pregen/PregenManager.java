@@ -1,6 +1,7 @@
 package fr.kiza.leagueuhc.core.game.helper.pregen;
 
 import fr.kiza.leagueuhc.LeagueUHC;
+import fr.kiza.leagueuhc.config.GameConfig;
 import fr.kiza.leagueuhc.core.api.packets.builder.ActionBarBuilder;
 import fr.kiza.leagueuhc.core.game.cycle.DayCycleManager;
 import org.bukkit.*;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 public class PregenManager {
 
     private final LeagueUHC plugin;
-    private final String worldName = "uhc_world";
+    private final String worldName = GameConfig.GAME_WORLD;
 
     private World world;
     private boolean running = false;
@@ -28,8 +29,7 @@ public class PregenManager {
     private Player initiator;
     private BukkitRunnable task;
 
-    private final int currentRadius = 500;
-    private final int chunksPerTickDefault = 6;
+    private final int currentRadius = GameConfig.MAP_RADIUS;
 
     public PregenManager(LeagueUHC plugin) {
         this.plugin = plugin;
@@ -65,7 +65,7 @@ public class PregenManager {
 
             WorldBorder border = created.getWorldBorder();
             border.setCenter(0, 0);
-            border.setSize(currentRadius * 2);
+            border.setSize(GameConfig.BORDER_SIZE);
             border.setWarningDistance(10);
             border.setWarningTime(15);
             border.setDamageAmount(0.2);
@@ -250,7 +250,7 @@ public class PregenManager {
 
             plugin.getLogger().info("[Pregen] Changement du biome au centre...");
 
-            int forestRadius = 350;
+            int forestRadius = GameConfig.FOREST_RADIUS;
             int forestChunkRadius = forestRadius >> 4;
 
             for (int cx = -forestChunkRadius; cx <= forestChunkRadius; cx++) {
@@ -367,6 +367,7 @@ public class PregenManager {
 
     private int determineChunksThisTick(double tps) {
         if (tps <= 0) return 1;
+        int chunksPerTickDefault = GameConfig.CHUNKS_PER_TICK_DEFAULT;
         if (tps >= 19.5) return chunksPerTickDefault;
         if (tps >= 18.5) return Math.max(1, chunksPerTickDefault - 2);
         if (tps >= 17.0) return Math.max(1, chunksPerTickDefault - 3);

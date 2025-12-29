@@ -13,15 +13,17 @@ public final class GameConfig {
     public static final String GAME_WORLD = "uhc_world";
 
     public static final int MAX_PLAYERS = 32;
-    public static final int MIN_PLAYERS_TO_START = 1;
 
     public static final int COUNTDOWN_SECONDS = 10;
-    public static final int PVP_ENABLE_SECONDS = 20;
-    public static final int FIRST_HEAL_MINUTES = 10;
 
-    public static final int SECOND_HEAL_MINUTES = 20;
-    public static final int RECONNECT_TIMEOUT_SECONDS = 300;
+    public static final int UNFREEZE_PLAYER_SECONDS = 0;
     public static final int CHAMPION_ASSIGN_DELAY_SECONDS = 10;
+    public static final int PVP_ENABLE_SECONDS = 20;
+
+    public static final int FIRST_HEAL_MINUTES = 10;
+    public static final int SECOND_HEAL_MINUTES = 20;
+
+    public static final int RECONNECT_TIMEOUT_SECONDS = 300;
 
     public static final int MAP_RADIUS = 500;
     public static final int BORDER_SIZE = MAP_RADIUS * 2;
@@ -42,7 +44,21 @@ public final class GameConfig {
     public static final String DATABASE_USER = instance.getConfig().getString("database.user");
     public static final String DATABASE_PASSWORD = instance.getConfig().getString("database.password");
 
-        public static final int POINTS_PER_KILL = 100;
+    public static final double KILL_BASE = 500.0;
+    public static final double KILL_ASSIST = 150.0;
+
+    public static final double DRAKE_KILL = 1000.0;
+
+    public static final double QUEST_EASY = 200.0;
+    public static final double QUEST_MEDIUM = 500.0;
+    public static final double QUEST_HARD = 1000.0;
+
+    public static final double FIRST_BLOOD = 250.0;
+    public static final double SHUTDOWN = 300.0;
+
+    public static final long ASSIST_TIME_WINDOW = 10000;
+
+    public static final int POINTS_PER_KILL = 100;
     public static final int POINTS_PER_ASSIST = 50;
     public static final int POINTS_WIN_BONUS = 500;
     public static final int POINTS_PARTICIPATION = 10;

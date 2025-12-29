@@ -1,6 +1,7 @@
 package fr.kiza.leagueuhc.core.game.context;
 
 import fr.kiza.leagueuhc.LeagueUHC;
+import fr.kiza.leagueuhc.config.GameConfig;
 import fr.kiza.leagueuhc.core.api.champion.Champion;
 import fr.kiza.leagueuhc.core.api.champion.ChampionRegistry;
 import fr.kiza.leagueuhc.core.api.drake.DrakeManager;
@@ -12,9 +13,7 @@ import java.util.*;
 
 public class GameContext {
 
-    public static final int PLAYER_MAX = 32, COUNTDOWN = 10;
-
-    private int countdown = COUNTDOWN;
+    private int countdown = GameConfig.COUNTDOWN_SECONDS;
     private boolean isPaused;
 
     private final Map<UUID, Integer> playerScores;
@@ -231,7 +230,7 @@ public class GameContext {
     }
 
     public void reset() {
-        this.countdown = COUNTDOWN;
+        this.countdown = GameConfig.COUNTDOWN_SECONDS;
         this.isPaused = false;
 
         this.playerScores.clear();

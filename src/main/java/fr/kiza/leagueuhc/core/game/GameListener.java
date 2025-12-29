@@ -1,9 +1,11 @@
 package fr.kiza.leagueuhc.core.game;
 
 import fr.kiza.leagueuhc.LeagueUHC;
+import fr.kiza.leagueuhc.core.api.champion.ChampionAssignment;
 import fr.kiza.leagueuhc.core.game.event.GameTimerEvent;
 import fr.kiza.leagueuhc.core.game.event.PlayerFreezeEvent;
 import fr.kiza.leagueuhc.core.game.event.PvPEvent;
+import fr.kiza.leagueuhc.core.game.gold.GoldManager;
 import fr.kiza.leagueuhc.core.game.input.GameInput;
 import fr.kiza.leagueuhc.core.game.input.InputType;
 import org.bukkit.Bukkit;
@@ -20,16 +22,18 @@ import org.bukkit.event.player.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static fr.kiza.leagueuhc.config.GameConfig.*;
 
 public class GameListener implements Listener {
 
     protected final LeagueUHC instance;
 
     private boolean
+            playersFroze = false,
+            championsAssigned = false,
             pvpEnabled = false,
             firstHealDone = false,
             secondHealDone = false;
@@ -172,35 +176,51 @@ public class GameListener implements Listener {
         final int seconds = event.getElapsedSeconds();
         final int minutes = event.getElapsedMinutes();
 
-        if (!this.pvpEnabled && seconds >= 20) {
+        final List<Player> players = this.instance.getGameEngine().getContext().getPlayers()
+                .stream()
+                .map(Bukkit::getPlayer)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        if (!this.playersFroze && seconds >= UNFREEZE_PLAYER_SECONDS) {
+            this.playersFroze = true;
+            players.forEach(player -> Bukkit.getPluginManager().callEvent(new PlayerFreezeEvent(player, false)));
+        }
+
+        if (!this.championsAssigned && seconds >= CHAMPION_ASSIGN_DELAY_SECONDS) {
+            this.championsAssigned = true;
+            ChampionAssignment.assignFromRegistry(players);
+        }
+
+        if (!this.pvpEnabled && seconds >= PVP_ENABLE_SECONDS) {
             this.pvpEnabled = true;
             Bukkit.getPluginManager().callEvent(new PvPEvent(true));
         }
 
-        if (!this.firstHealDone && minutes >= 10) {
+        if (!this.firstHealDone && minutes >= FIRST_HEAL_MINUTES) {
             this.firstHealDone = true;
-            Bukkit.getOnlinePlayers().forEach(players -> {
-                players.setHealth(players.getMaxHealth());
-                players.setFoodLevel(20);
-                players.playSound(players.getLocation(), Sound.LEVEL_UP, 1.0f, 1.0f);
-                players.sendMessage(ChatColor.GREEN + "✚ Heal de l'épisode 1 !");
-            });
+            this.applyHeal(ChatColor.GREEN + "✚ Final Heal de l'épisode 1 !");
         }
 
-        if (!this.secondHealDone && minutes >= 20) {
+        if (!this.secondHealDone && minutes >= SECOND_HEAL_MINUTES) {
             this.secondHealDone = true;
-            Bukkit.getOnlinePlayers().forEach(players -> {
-                players.setHealth(players.getMaxHealth());
-                players.setFoodLevel(20);
-                players.playSound(players.getLocation(), Sound.LEVEL_UP, 1.0f, 1.0f);
-                players.sendMessage(ChatColor.GREEN + "✚ Heal de l'épisode 2 !");
-            });
+            this.applyHeal(ChatColor.GREEN + "✚ Final Heal de l'épisode 2 !");
         }
 
+        /**
+         * Delete later
+         */
         if (seconds % 10 == 0 && seconds > 0) {
-            Bukkit.getOnlinePlayers().forEach(player ->
-                    player.sendMessage(ChatColor.GRAY + "⏱ Temps écoulé: " + ChatColor.GOLD + event.getFormattedTime())
-            );
+            players.forEach(player -> player.sendMessage(ChatColor.GRAY + "⏱ Temps écoulé: " + ChatColor.GOLD + event.getFormattedTime()));
         }
+    }
+
+    private void applyHeal(final String message) {
+        Bukkit.getOnlinePlayers().forEach(players -> {
+            players.setHealth(players.getMaxHealth());
+            players.setFoodLevel(20);
+            players.playSound(players.getLocation(), Sound.LEVEL_UP, 1.0f, 1.0f);
+            players.sendMessage(ChatColor.GREEN + message);
+        });
     }
 }

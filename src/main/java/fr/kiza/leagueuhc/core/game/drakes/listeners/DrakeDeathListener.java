@@ -1,5 +1,6 @@
 package fr.kiza.leagueuhc.core.game.drakes.listeners;
 
+import fr.kiza.leagueuhc.LeagueUHC;
 import fr.kiza.leagueuhc.core.api.drake.Drake;
 import fr.kiza.leagueuhc.core.api.drake.DrakeManager;
 import fr.kiza.leagueuhc.core.api.packets.builder.ActionBarBuilder;
@@ -59,6 +60,10 @@ public class DrakeDeathListener implements Listener {
             Bukkit.broadcastMessage(drake.getColor() + "☠ " + ChatColor.GRAY + "Le " + drake.getDisplayName() + ChatColor.GRAY + " a été vaincu !");
             Bukkit.broadcastMessage("");
         }
+
+        if (killer == null) return;
+
+        LeagueUHC.getInstance().getGameEngine().getGameHelper().getManager().getGoldManager().onDrakeKill(killer.getPlayer());
 
         drakeManager.removeDrake(entity);
     }
